@@ -23,10 +23,10 @@ class CardAdmin(admin.ModelAdmin):
         "series",
         "number",
         "issue_date",
-        "card_duration_type",
+        "duration_type",
         "last_used_date",
         "balance",
-        "status",
+        "humanreadable_status",
         "valid_until",
     )
     list_select_related = (
@@ -37,7 +37,6 @@ class CardAdmin(admin.ModelAdmin):
     )
     list_filter = (
         "issue_date",
-        "status",
     )
     empty_value_display = "--empty--"
 

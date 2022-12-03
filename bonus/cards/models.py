@@ -19,7 +19,15 @@ class CardSeries(models.Model):
         ordering = ("-id",)
 
     def __str__(self):
-        return f"CardSeries({self.pk:0>5})"
+        return f"CardSeries({self.printable_number})"
+
+    @property
+    def series(self):
+        return self.pk
+
+    @property
+    def printable_number(self):
+        return f"{self.series:0>5}"
 
 
 class Card(models.Model):
@@ -37,11 +45,16 @@ class Card(models.Model):
         (ONE_YEAR, 'One year'),
     ]
 
-    CARD_STATUS_CHOICES = [
-        (NOT_ACTIVATED, "Not activated"),
-        (ACTIVATED, "Active"),
-        (OUTDATED, "Outdated"),
-    ]
+    # CARD_STATUS_CHOICES = [
+    #     (NOT_ACTIVATED, "Not activated"),
+    #     (ACTIVATED, "Active"),
+    #     (OUTDATED, "Outdated"),
+    # ]
+    HUMANREADABLE_CARD_STATUSES = {
+        NOT_ACTIVATED: "Not activated",
+        ACTIVATED: "Active",
+        OUTDATED: "Outdated",
+    }
 
     series = models.ForeignKey(
         CardSeries,
@@ -50,17 +63,12 @@ class Card(models.Model):
         verbose_name="series",
         help_text="ID of card series",
     )
-    number = models.PositiveIntegerField(
-        verbose_name="number",
-        help_text="card number",
-        validators=(MinValueValidator(1, "Card numbers start from 1."),),
-    )
     issue_date = models.DateTimeField(
         default=timezone.now,
         verbose_name="issue_date",
         help_text="Card issue date",
     )
-    card_duration_type = models.DurationField(
+    duration_type = models.DurationField(
         verbose_name="card_duration_type",
         help_text="Card duration type",
         choices=CARD_DURATION_CHOICES,
@@ -80,11 +88,16 @@ class Card(models.Model):
         validators=[MinValueValidator(0, "Balance can not be negative"),],
         default=Decimal(0.0),
     )
-    status = models.PositiveSmallIntegerField(
-        verbose_name="status",
-        help_text="Card status",
-        choices=CARD_STATUS_CHOICES,
-        default=NOT_ACTIVATED,
+    # status = models.PositiveSmallIntegerField(
+    #     verbose_name="status",
+    #     help_text="Card status",
+    #     choices=CARD_STATUS_CHOICES,
+    #     default=NOT_ACTIVATED,
+    # )
+    is_active = models.BooleanField(
+        verbose_name="is_active",
+        help_text="Is card active?",
+        default=False,
     )
 
     class Meta:
@@ -94,20 +107,36 @@ class Card(models.Model):
         constraints = (
             models.CheckConstraint(
                 check=models.Q(balance__gte=Decimal(0.0)),
-                name="balance_is_not_negative"
-            ),
-            models.UniqueConstraint(
-                fields=("series", "number"),
-                name="series_number_unique_constraint"
+                name="negative_card_balance_disallowed"
             ),
         )
 
     def __str__(self):
-        return f"Card({self.series.pk:0>5}-{self.number:0>7})"
+        return f"Card({self.series.printable_number}-{self.printable_number})"
+
+    @property
+    def number(self):
+        return self.pk
+
+    @property
+    def printable_number(self):
+        return f"{self.number:0>7}"
 
     @property
     def valid_until(self):
-        return (self.issue_date + self.card_duration_type)
+        return (self.issue_date + self.duration_type)
+
+    @property
+    def status(self):
+        if timezone.now() < self.valid_until:
+            if self.is_active:
+                return Card.ACTIVATED
+            return Card.NOT_ACTIVATED
+        return Card.OUTDATED
+
+    @property
+    def humanreadable_status(self):
+        return Card.HUMANREADABLE_CARD_STATUSES.get(self.status)
 
 
 class Transaction(models.Model):
@@ -138,9 +167,9 @@ class Transaction(models.Model):
         constraints = (
             models.CheckConstraint(
                 check=~models.Q(amount=Decimal(0.0)),
-                name="zero_amount_transaction"
+                name="zero_amount_transaction_disallowed"
             ),
         )
 
     def __str__(self):
-        return f"Transaction({self.amount})"
+        return f"Transaction({self.amount})<Card({self.card})>"

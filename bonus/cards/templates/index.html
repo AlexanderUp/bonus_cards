@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Index{% endblock %}
+{% block content %}
+    <h1>Welcome to Card generator!</h1>
+    <hr>
+    <h3>Available actions:</h3>
+    <p><a href="{% url 'cards:card_list' %}">Card list</a></p>
+    <p><a href="">Search card</a></p>
+    <p><a href="">View card</a></p>
+    <p><a href="">Activate/deactivate card</a></p>
+    <p><a href="">Delete card</a></p>
+{% endblock %}

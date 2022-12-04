@@ -45,11 +45,6 @@ class Card(models.Model):
         (ONE_YEAR, 'One year'),
     ]
 
-    # CARD_STATUS_CHOICES = [
-    #     (NOT_ACTIVATED, "Not activated"),
-    #     (ACTIVATED, "Active"),
-    #     (OUTDATED, "Outdated"),
-    # ]
     HUMANREADABLE_CARD_STATUSES = {
         NOT_ACTIVATED: "Not activated",
         ACTIVATED: "Active",
@@ -88,12 +83,6 @@ class Card(models.Model):
         validators=[MinValueValidator(0, "Balance can not be negative"),],
         default=Decimal(0.0),
     )
-    # status = models.PositiveSmallIntegerField(
-    #     verbose_name="status",
-    #     help_text="Card status",
-    #     choices=CARD_STATUS_CHOICES,
-    #     default=NOT_ACTIVATED,
-    # )
     is_active = models.BooleanField(
         verbose_name="is_active",
         help_text="Is card active?",

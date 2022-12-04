@@ -1,0 +1,11 @@
+<div>
+    {% include "includes/paginator.html" %}
+</div>
+<hr>
+<div>
+    {% with request.resolver_match.view as view_name %}
+        {% if view_name != "cards:index" %}
+            <a href="{% url 'cards:index' %}">Back to Index</a>
+        {% endif %}
+    {% endwith %}
+</div>

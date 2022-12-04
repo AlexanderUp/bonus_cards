@@ -148,3 +148,6 @@ LOGGING = {
         }
     }
 }
+
+# project related settings
+CARDS_PER_PAGE_NUMBER = 2

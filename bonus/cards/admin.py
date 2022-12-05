@@ -48,6 +48,7 @@ class TransactionAdmin(admin.ModelAdmin):
     list_display = (
         "pk",
         "card",
+        "date_time",
         "amount",
         "description",
     )

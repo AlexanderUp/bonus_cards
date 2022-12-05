@@ -60,7 +60,6 @@ class CardSeries(models.Model):
 
 
 class Card(models.Model):
-
     NOT_ACTIVATED = 0
     ACTIVATED = 1
     OUTDATED = 2

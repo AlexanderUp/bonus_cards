@@ -5,6 +5,11 @@ from . import views
 app_name = "cards"
 
 urlpatterns = [
+    path(
+        "card_series/",
+        views.CardSeriesListView.as_view(),
+        name="card_series_list"
+    ),
     path("card_list/", views.CardListView.as_view(), name="card_list"),
     path(
         "card_detail/<int:pk>/",
@@ -33,6 +38,14 @@ urlpatterns = [
         "generate_cards/",
         views.GenerateCardsFormView.as_view(),
         name="generate_cards"
+    ),
+    path(
+        "create_series/",
+        views.CardSeriesCreationFormView.as_view(),
+        name="create_series"
+    ),
+    path(
+        "card_search/", views.CardSearchFormView.as_view(), name="card_search"
     ),
     path("", views.IndexView.as_view(), name="index"),
 ]

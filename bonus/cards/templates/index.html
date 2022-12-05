@@ -4,7 +4,9 @@
     <h1>Welcome to Card generator!</h1>
     <hr>
     <h3>Available actions:</h3>
+    <p><a href="{% url 'cards:card_series_list' %}">Card series list</a></p>
     <p><a href="{% url 'cards:card_list' %}">Card list</a></p>
+    <p><a href="{% url 'cards:create_series' %}">Create card series</a></p>
     <p><a href="{% url 'cards:generate_cards' %}">Generate cards</a></p>
-    <p><a href="">Search card</a></p>
+    <p><a href="{% url 'cards:card_search' %}">Search card</a></p>
 {% endblock %}

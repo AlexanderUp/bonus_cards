@@ -11,7 +11,7 @@ def get_next_card_number_in_series(card_series):
     return next_card_number  # noqa
 
 
-def generate_cards(card_series, duration_type, card_count):
+def generate_cards(card_series, cards_count):
     next_number = get_next_card_number_in_series(card_series)
     import sys
     print("generate_cards called", file=sys.stderr)
@@ -19,7 +19,7 @@ def generate_cards(card_series, duration_type, card_count):
         Card(
             series=card_series,
             number=(next_number + i),
-            duration_type=duration_type
-        ) for i in range(card_count)
+        ) for i in range(cards_count)
     ]
     Card.objects.bulk_create(cards)
+    print(f"Total {cards_count} generated.", file=sys.stderr)

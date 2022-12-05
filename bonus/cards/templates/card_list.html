@@ -1,11 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>List of Bonus Cards available</h1>
+    <p><b>Total cards: </b>{{ page_obj.paginator.count }}</p>
     <hr>
     {% if not object_list %}
         <p><b>No cards yet!</b></p>
+    {% else %}
+        <p><b>Card - issue date - valid until - status</b></p>
     {% endif %}
     {% for object in object_list %}
-        <li><b>Card: </b>{{ object }} <a href="{% url 'cards:card_detail' object.pk %}">View card detail</a></li>
+        <li>
+            <b>Card: </b>{{ object }} 
+            {{ object.issue_date }} - {{ object.valid_until }} - {{ object.humanreadable_status }}
+            <a href="{% url 'cards:card_detail' object.pk %}">View card detail</a>
+        </li>
     {% endfor %}
 {% endblock %}

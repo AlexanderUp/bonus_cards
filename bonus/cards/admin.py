@@ -26,8 +26,6 @@ class CardAdmin(admin.ModelAdmin):
         "pk",
         "series",
         "number",
-        # "issue_date",
-        # "duration_type",
         "last_used_date",
         "balance",
         "is_active",

@@ -1,7 +1,7 @@
 from django import forms
 from django.core.validators import MinValueValidator
 
-from .models import Card, CardSeries
+from .models import CardSeries
 
 
 class CardGenerationForm(forms.Form):
@@ -17,9 +17,4 @@ class CardGenerationForm(forms.Form):
             MinValueValidator(1, "Minimum card count to generate is 1."),
         ),
         initial=10,
-    )
-    duration_type = forms.ChoiceField(
-        choices=CardSeries.CARD_DURATION_TYPES,
-        label="card_duration_type",
-        help_text="Select card duration type"
     )

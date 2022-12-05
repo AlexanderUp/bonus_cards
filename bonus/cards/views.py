@@ -51,19 +51,8 @@ class GenerateCardsFormView(FormView):
 
     def form_valid(self, form):
         series = form.cleaned_data.get("series")
-        duration_type_str = form.cleaned_data.get("duration_type")
-        # duration_type = Card.duration_type_str
-        card_count = form.cleaned_data.get("count")
-
-        import sys
-        print(">>>>>>>>>>>>>>>", file=sys.stderr)
-        print(series, duration_type_str, type(duration_type_str), card_count, file=sys.stderr)
-
-        # generate_cards(
-        #     card_series=series,
-        #     duration_type=duration_type,
-        #     card_count=card_count
-        # )
+        cards_count = form.cleaned_data.get("count")
+        generate_cards(card_series=series, cards_count=cards_count)
         return super().form_valid(form)
 
 

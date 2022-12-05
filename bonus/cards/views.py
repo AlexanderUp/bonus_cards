@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import (DeleteView, DetailView, FormView, ListView,
                                   TemplateView)
@@ -71,13 +71,21 @@ class CardSeriesCreationFormView(FormView):
         return super().form_valid(form)
 
 
-class CardSearchFormView(FormView):
-    form_class = CardSearchForm
-    template_name = "card_search.html"
-    success_url = reverse_lazy("cards:card_list")
-
-    def form_valid(self, form):
-        return super().form_valid(form)
+def card_search_view(request):
+    form = CardSearchForm(request.POST or None)
+    if form.is_valid():
+        search_query_params = {
+            key: value for key, value in form.cleaned_data.items() if value is not None
+        }
+        object_list = (Card.objects
+                           .filter(**search_query_params)
+                           .select_related("series"))
+        return render(
+            request, "card_search_result_list.html", {
+                "object_list": object_list
+            }
+        )
+    return render(request, "card_search.html", {"form": form})
 
 
 def activate_card(request, pk):

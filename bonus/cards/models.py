@@ -118,11 +118,11 @@ class Card(models.Model):
         )
 
     def __str__(self):
-        return f"Card({self.series.printable_number}-{self.printable_number})"
+        return f"Card({self.printable_number})"
 
     @property
     def printable_number(self):
-        return f"{self.number:0>7}"
+        return f"{self.series.printable_number}-{self.number:0>7}"
 
     @property
     def valid_until(self):

@@ -28,85 +28,91 @@ class CardGenerationForm(forms.Form):
 
 
 class CardSearchForm(forms.Form):
-    series_from = forms.IntegerField(
+    series__gte = forms.IntegerField(
         min_value=1,
         label="Card series from",
         help_text="Card series from",
         required=False,
     )
-    series_to = forms.IntegerField(
+    series__lte = forms.IntegerField(
         min_value=1,
         label="Card series to",
         help_text="Card series to",
         required=False,
     )
-    number_from = forms.IntegerField(
+    number__gte = forms.IntegerField(
         min_value=1,
         label="Card number from",
         help_text="Card number from",
         required=False,
     )
-    number_to = forms.IntegerField(
+    number__lte = forms.IntegerField(
         min_value=1,
         label="Card number to",
         help_text="Card number to",
         required=False,
     )
-    issue_date_from = forms.DateTimeField(
-        label="Issued from",
-        help_text="Issued from",
+    series__issue_date__gte = forms.DateTimeField(
+        label="Issued after",
+        help_text="Issued after",
         required=False,
         widget=forms.SelectDateWidget(),
     )
-    issue_date_to = forms.DateTimeField(
-        label="Issued to",
-        help_text="Issued to",
+    series__issue_date__lte = forms.DateTimeField(
+        label="Issued before",
+        help_text="Issued before",
         required=False,
         widget=forms.SelectDateWidget(),
     )
-    valid_from = forms.DateTimeField(
-        label="Valid to min date",
-        help_text="Valid to min date",
+    valid__gte = forms.DateTimeField(
+        label="Valid after",
+        help_text="Valid after",
         required=False,
         widget=forms.SelectDateWidget(),
     )
-    valid_to = forms.DateTimeField(
-        label="Valid to max date",
-        help_text="Valid to max date",
+    valid__lte = forms.DateTimeField(
+        label="Valid before",
+        help_text="Valid before",
         required=False,
         widget=forms.SelectDateWidget(),
     )
 
     def clean(self):
         cleaned_data = super().clean()
-        series_from = cleaned_data.get("series_from")
-        series_to = cleaned_data.get("series_to")
-        number_from = cleaned_data.get("number_from")
-        number_to = cleaned_data.get("number_to")
-        issue_date_from = cleaned_data.get("issue_date_from")
-        issue_date_to = cleaned_data.get("issue_date_to")
-        valid_from = cleaned_data.get("valid_from")
-        valid_to = cleaned_data.get("valid_to")
+        series__gte = cleaned_data.get("series__gte")
+        series__lte = cleaned_data.get("series__lte")
+        number__gte = cleaned_data.get("number__gte")
+        number__lte = cleaned_data.get("number__lte")
+        series__issue_date__gte = cleaned_data.get("series__issue_date__gte")
+        series__issue_date__lte = cleaned_data.get("series__issue_date__lte")
+        valid__gte = cleaned_data.get("valid__gte")
+        valid__lte = cleaned_data.get("valid__lte")
 
-        if series_from and series_to:
-            if series_from > series_to:
+        if series__gte and series__lte:
+            if series__gte > series__lte:
                 raise ValidationError("Incorrect series bound!")
 
-        if number_from and number_to:
-            if number_from > number_to:
+        if number__gte and number__lte:
+            if number__gte > number__lte:
                 raise ValidationError("Incorrect number bound!")
 
-        if issue_date_from and issue_date_to:
-            if issue_date_from > issue_date_to:
+        if series__issue_date__gte and series__issue_date__lte:
+            if series__issue_date__gte > series__issue_date__lte:
                 raise ValidationError("Incorrect issue date bound!")
 
-        if valid_from and valid_to:
-            if valid_from > valid_to:
-                raise ValidationError("Incorrect valid until bound1")
+        if valid__gte and valid__lte:
+            if valid__gte > valid__lte:
+                raise ValidationError("Incorrect valid until bound!")
 
         conditions = (
-            series_from, series_to, number_from, number_to,
-            issue_date_from, issue_date_to, valid_from, valid_to,
+            series__gte,
+            series__lte,
+            number__gte,
+            number__lte,
+            series__issue_date__gte,
+            series__issue_date__lte,
+            valid__gte,
+            valid__lte,
         )
 
         if not any(conditions):

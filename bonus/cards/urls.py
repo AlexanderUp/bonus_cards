@@ -44,8 +44,6 @@ urlpatterns = [
         views.CardSeriesCreationFormView.as_view(),
         name="create_series"
     ),
-    path(
-        "card_search/", views.CardSearchFormView.as_view(), name="card_search"
-    ),
+    path("card_search/", views.card_search_view, name="card_search"),
     path("", views.IndexView.as_view(), name="index"),
 ]

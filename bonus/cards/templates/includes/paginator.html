@@ -5,7 +5,9 @@
             <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
         {% endif %}
         {% for i in page_obj.paginator.page_range %}
-            {% if i != 1 and i != page_obj.paginator.num_pages %}
+            {% if page_obj.number == i %}
+                <b>-{{ i }}-</b>
+            {% else %}
                 <a href="?page={{ i }}">{{ i }}</a>
             {% endif %}
         {% endfor %}

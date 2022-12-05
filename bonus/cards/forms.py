@@ -19,7 +19,7 @@ class CardGenerationForm(forms.Form):
         initial=10,
     )
     duration_type = forms.ChoiceField(
-        choices=Card.CARD_DURATION_CHOICES,
+        choices=CardSeries.CARD_DURATION_TYPES,
         label="card_duration_type",
         help_text="Select card duration type"
     )

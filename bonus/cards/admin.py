@@ -6,7 +6,11 @@ from .models import Card, CardSeries, Transaction
 class CardSeriesAdmin(admin.ModelAdmin):
     list_display = (
         "pk",
+        "duration_type",
+        "issue_date",
         "description",
+        "duration",
+        "valid_until",
     )
     list_display_links = (
         "description",
@@ -22,10 +26,11 @@ class CardAdmin(admin.ModelAdmin):
         "pk",
         "series",
         "number",
-        "issue_date",
-        "duration_type",
+        # "issue_date",
+        # "duration_type",
         "last_used_date",
         "balance",
+        "is_active",
         "humanreadable_status",
         "valid_until",
     )
@@ -36,7 +41,7 @@ class CardAdmin(admin.ModelAdmin):
         "series__description",
     )
     list_filter = (
-        "issue_date",
+        "series__issue_date",
     )
     empty_value_display = "--empty--"
 

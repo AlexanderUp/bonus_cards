@@ -2,6 +2,9 @@
 {% block content %}
 <h1>List of Bonus Cards available</h1>
     <hr>
+    {% if not object_list %}
+        <p><b>No cards yet!</b></p>
+    {% endif %}
     {% for object in object_list %}
         <li><b>Card: </b>{{ object }} <a href="{% url 'cards:card_detail' object.pk %}">View card detail</a></li>
     {% endfor %}

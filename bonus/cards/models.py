@@ -7,6 +7,27 @@ from django.utils import timezone
 
 
 class CardSeries(models.Model):
+    ONE_MONTH = 30
+    SIX_MONTH = 183
+    ONE_YEAR = 365
+
+    CARD_DURATION_TYPES = [
+        (ONE_MONTH, 'One month'),
+        (SIX_MONTH, 'Six month'),
+        (ONE_YEAR, 'One year'),
+    ]
+
+    duration_type = models.PositiveSmallIntegerField(
+        verbose_name="card_duration_type",
+        help_text="Card duration type",
+        choices=CARD_DURATION_TYPES,
+        default=ONE_MONTH,
+    )
+    issue_date = models.DateTimeField(
+        default=timezone.now,
+        verbose_name="issue_date",
+        help_text="Card issue date",
+    )
     description = models.CharField(
         max_length=100,
         verbose_name="description",
@@ -29,21 +50,29 @@ class CardSeries(models.Model):
     def printable_number(self):
         return f"{self.series:0>5}"
 
+    @property
+    def duration(self):
+        return timedelta(self.duration_type)
+
+    @property
+    def valid_until(self):
+        return (self.issue_date + self.duration)
+
 
 class Card(models.Model):
-    ONE_MONTH = timedelta(days=30)
-    SIX_MONTH = timedelta(days=183)
-    ONE_YEAR = timedelta(days=365)
+    # ONE_MONTH = timedelta(days=30)
+    # SIX_MONTH = timedelta(days=183)
+    # ONE_YEAR = timedelta(days=365)
 
     NOT_ACTIVATED = 0
     ACTIVATED = 1
     OUTDATED = 2
 
-    CARD_DURATION_CHOICES = [
-        (ONE_MONTH, 'One month'),
-        (SIX_MONTH, 'Six month'),
-        (ONE_YEAR, 'One year'),
-    ]
+    # CARD_DURATION_CHOICES = [
+    #     (ONE_MONTH, 'One month'),
+    #     (SIX_MONTH, 'Six month'),
+    #     (ONE_YEAR, 'One year'),
+    # ]
 
     HUMANREADABLE_CARD_STATUSES = {
         NOT_ACTIVATED: "Not activated",
@@ -63,17 +92,17 @@ class Card(models.Model):
         help_text="Card number",
         validators=(MinValueValidator(1, "Card numbers start from 1."),),
     )
-    issue_date = models.DateTimeField(
-        default=timezone.now,
-        verbose_name="issue_date",
-        help_text="Card issue date",
-    )
-    duration_type = models.DurationField(
-        verbose_name="card_duration_type",
-        help_text="Card duration type",
-        choices=CARD_DURATION_CHOICES,
-        default=ONE_MONTH,
-    )
+    # issue_date = models.DateTimeField(
+    #     default=timezone.now,
+    #     verbose_name="issue_date",
+    #     help_text="Card issue date",
+    # )
+    # duration_type = models.DurationField(
+    #     verbose_name="card_duration_type",
+    #     help_text="Card duration type",
+    #     choices=CARD_DURATION_CHOICES,
+    #     default=ONE_MONTH,
+    # )
     last_used_date = models.DateTimeField(
         verbose_name="last_used_date",
         help_text="Date of last card usage",
@@ -118,7 +147,8 @@ class Card(models.Model):
 
     @property
     def valid_until(self):
-        return (self.issue_date + self.duration_type)
+        # return (self.series.issue_date + self.series.duration_type)
+        return self.series.valid_until
 
     @property
     def status(self):
@@ -147,6 +177,11 @@ class Transaction(models.Model):
         verbose_name="amount",
         help_text="Transaction amount",
         default=Decimal(0.0),
+    )
+    date_time = models.DateTimeField(
+        default=timezone.now,
+        verbose_name="date_time",
+        help_text="Transaction date and time",
     )
     description = models.CharField(
         max_length=100,

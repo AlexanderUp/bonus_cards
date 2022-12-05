@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Card transactions{% endblock %}
+{% block content %}
+<h1>Card transactions</h1>
+<h3>Total transactions: {{ transaction_list.count }}</h3>
+<div>
+    {% for transaction in transaction_list %}
+        <li>Amount: <b>{{ transaction.amount }}</b> Description: {{ transaction.description }}</li>
+    {% endfor %}
+</div>
+{% endblock %}

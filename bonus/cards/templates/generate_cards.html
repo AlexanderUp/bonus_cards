@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Generate cards{% endblock %}
+{% block content %}
+<h1>Card generation</h1>
+<div>
+    <form method="post" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Generate</button> 
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Card detail{% endblock %}
+{% block content %}
+<h1>Card detail</h1>
+<div>
+    <p><b>Card: </b>{{ object }}</p>
+    <p><b>Series: </b>{{ object.series.printable_number }}</p>
+    <p><b>Printable number: </b>{{ object.printable_number }}</p>
+    <p><b>Valid until: </b>{{ object.valid_until }}</p>
+    <p><b>Card status: </b>{{ object.status }}</p>
+    <p><b>Humanreadable status: </b>{{ object.humanreadable_status }}</p>
+    <p><b>Issue date: </b>{{ object.issue_date }}</p>
+    <p><b>Duration type: </b>{{ object.duration_type }}</p>
+    <p><b>Last used date: </b>{{ object.last_used_date }}</p>
+    <p><b>Balance: </b>{{ object.balance }}</p>
+    <p><b>Is active: </b>{{ object.is_active }}</p>
+</div>
+<div>
+    <hr>
+    <h3>Actions available:</h3>
+    {% if not object.is_active %}
+        <p><a href="{% url 'cards:activate_card' object.pk %}">Activate card</a></p>
+    {% else %}
+        <p><a href="{% url 'cards:deactivate_card' object.pk %}">Deactivate card</a></p>
+    {% endif %}
+    <p><a href="{% url 'cards:view_card_transaction' object.pk %}">View card transactions</a></p>
+    <p><a href="{% url 'cards:delete_card' object.pk %}">Delete card</a></p>
+</div>
+{% endblock %}

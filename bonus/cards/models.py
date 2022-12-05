@@ -58,6 +58,11 @@ class Card(models.Model):
         verbose_name="series",
         help_text="ID of card series",
     )
+    number = models.PositiveIntegerField(
+        verbose_name="number",
+        help_text="Card number",
+        validators=(MinValueValidator(1, "Card numbers start from 1."),),
+    )
     issue_date = models.DateTimeField(
         default=timezone.now,
         verbose_name="issue_date",
@@ -98,14 +103,14 @@ class Card(models.Model):
                 check=models.Q(balance__gte=Decimal(0.0)),
                 name="negative_card_balance_disallowed"
             ),
+            models.UniqueConstraint(
+                fields=("series", "number"),
+                name="series_number_pair_to_be_unique"
+            ),
         )
 
     def __str__(self):
         return f"Card({self.series.printable_number}-{self.printable_number})"
-
-    @property
-    def number(self):
-        return self.pk
 
     @property
     def printable_number(self):

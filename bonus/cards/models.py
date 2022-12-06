@@ -6,6 +6,13 @@ from django.db import models
 from django.utils import timezone
 
 
+# class CardValidDateAnnotatedManeger(models.Manager):
+#     def get_query_set(self):
+#         return super().get_queryset().annotate(
+#             valid_until=(models.F("issue_date") + self.duration)
+#         )
+
+
 class CardSeries(models.Model):
     ONE_MONTH = 30
     SIX_MONTH = 183

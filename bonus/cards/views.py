@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import (DeleteView, DetailView, FormView, ListView,
@@ -80,9 +81,13 @@ def card_search_view(request):
         object_list = (Card.objects
                            .filter(**search_query_params)
                            .select_related("series"))
+        paginator = Paginator(
+            object_list=object_list, per_page=settings.CARDS_PER_PAGE_NUMBER
+        )
+        page_obj = paginator.get_page(1)
         return render(
             request, "card_search_result_list.html", {
-                "object_list": object_list
+                "page_obj": page_obj
             }
         )
     return render(request, "card_search.html", {"form": form})

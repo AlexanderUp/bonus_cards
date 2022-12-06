@@ -64,13 +64,13 @@ class CardSearchForm(forms.Form):
         required=False,
         widget=forms.SelectDateWidget(),
     )
-    valid__gte = forms.DateTimeField(
+    series__valid_until__gte = forms.DateTimeField(
         label="Valid after",
         help_text="Valid after",
         required=False,
         widget=forms.SelectDateWidget(),
     )
-    valid__lte = forms.DateTimeField(
+    series__valid_until__lte = forms.DateTimeField(
         label="Valid before",
         help_text="Valid before",
         required=False,
@@ -85,8 +85,8 @@ class CardSearchForm(forms.Form):
         number__lte = cleaned_data.get("number__lte")
         series__issue_date__gte = cleaned_data.get("series__issue_date__gte")
         series__issue_date__lte = cleaned_data.get("series__issue_date__lte")
-        valid__gte = cleaned_data.get("valid__gte")
-        valid__lte = cleaned_data.get("valid__lte")
+        series__valid_until__gte = cleaned_data.get("series__valid_until__gte")
+        series__valid_until__lte = cleaned_data.get("series__valid_until__lte")
 
         if series__gte and series__lte:
             if series__gte > series__lte:
@@ -100,8 +100,8 @@ class CardSearchForm(forms.Form):
             if series__issue_date__gte > series__issue_date__lte:
                 raise ValidationError("Incorrect issue date bound!")
 
-        if valid__gte and valid__lte:
-            if valid__gte > valid__lte:
+        if series__valid_until__gte and series__valid_until__lte:
+            if series__valid_until__gte > series__valid_until__lte:
                 raise ValidationError("Incorrect valid until bound!")
 
         conditions = (
@@ -111,8 +111,8 @@ class CardSearchForm(forms.Form):
             number__lte,
             series__issue_date__gte,
             series__issue_date__lte,
-            valid__gte,
-            valid__lte,
+            series__valid_until__gte,
+            series__valid_until__lte,
         )
 
         if not any(conditions):

@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.core.paginator import Paginator
+from django.db.models import F
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import (DeleteView, DetailView, FormView, ListView,
@@ -74,23 +74,26 @@ class CardSeriesCreationFormView(FormView):
 
 def card_search_view(request):
     form = CardSearchForm(request.POST or None)
+    context = {
+        "form": form,
+        "object_list": None
+    }
     if form.is_valid():
         search_query_params = {
-            key: value for key, value in form.cleaned_data.items() if value is not None
+            key: value for key, value in form.cleaned_data.items()
+            if value is not None
         }
         object_list = (Card.objects
+                           .annotate(
+                                valid_until_date=(
+                                    F("series__issue_date")
+                                    + F("series__duration")
+                                )
+                            )
                            .filter(**search_query_params)
                            .select_related("series"))
-        paginator = Paginator(
-            object_list=object_list, per_page=settings.CARDS_PER_PAGE_NUMBER
-        )
-        page_obj = paginator.get_page(1)
-        return render(
-            request, "card_search_result_list.html", {
-                "page_obj": page_obj
-            }
-        )
-    return render(request, "card_search.html", {"form": form})
+        context["object_list"] = object_list
+    return render(request, "card_search.html", context)
 
 
 def activate_card(request, pk):

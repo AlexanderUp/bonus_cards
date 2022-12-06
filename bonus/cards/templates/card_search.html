@@ -9,4 +9,20 @@
             <button type="submit">Search!</button>
         </form>
     </div>
+    <div>
+        <p><a href="{% url 'cards:card_search' %}">New search</a></p>
+    </div>
+    {% if object_list %}
+        <hr>
+        <h1>Card search results:</h1>
+        <div>
+            <h3>
+                <p><b>Total cards found:</b> {{ object_list.count }}</p>
+                <p><b>Card - issue date - valid until - status</b></p>
+            </h3>
+            {% for object in object_list %}
+                <li><b>{{ object.printable_number }}</b> - {{ object.series.issue_date }} - {{ object.valid_until }} - {{ object.humanreadable_status }}</li>
+            {% endfor %}
+        </div>
+    {% endif %}
 {% endblock %}

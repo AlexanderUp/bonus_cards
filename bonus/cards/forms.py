@@ -8,7 +8,7 @@ from .models import CardSeries
 class CardSeriesCreationForm(forms.ModelForm):
     class Meta:
         model = CardSeries
-        fields = ("duration_type", "description",)
+        fields = ("duration", "description",)
 
 
 class CardGenerationForm(forms.Form):
@@ -64,13 +64,13 @@ class CardSearchForm(forms.Form):
         required=False,
         widget=forms.SelectDateWidget(),
     )
-    series__valid_until__gte = forms.DateTimeField(
+    valid_until_date__gte = forms.DateTimeField(
         label="Valid after",
         help_text="Valid after",
         required=False,
         widget=forms.SelectDateWidget(),
     )
-    series__valid_until__lte = forms.DateTimeField(
+    valid_until_date__lte = forms.DateTimeField(
         label="Valid before",
         help_text="Valid before",
         required=False,
@@ -85,8 +85,8 @@ class CardSearchForm(forms.Form):
         number__lte = cleaned_data.get("number__lte")
         series__issue_date__gte = cleaned_data.get("series__issue_date__gte")
         series__issue_date__lte = cleaned_data.get("series__issue_date__lte")
-        series__valid_until__gte = cleaned_data.get("series__valid_until__gte")
-        series__valid_until__lte = cleaned_data.get("series__valid_until__lte")
+        valid_until_date__gte = cleaned_data.get("valid_until_date__gte")
+        valid_until_date__lte = cleaned_data.get("valid_until_date__lte")
 
         if series__gte and series__lte:
             if series__gte > series__lte:
@@ -100,8 +100,8 @@ class CardSearchForm(forms.Form):
             if series__issue_date__gte > series__issue_date__lte:
                 raise ValidationError("Incorrect issue date bound!")
 
-        if series__valid_until__gte and series__valid_until__lte:
-            if series__valid_until__gte > series__valid_until__lte:
+        if valid_until_date__gte and valid_until_date__lte:
+            if valid_until_date__gte > valid_until_date__lte:
                 raise ValidationError("Incorrect valid until bound!")
 
         conditions = (
@@ -111,8 +111,8 @@ class CardSearchForm(forms.Form):
             number__lte,
             series__issue_date__gte,
             series__issue_date__lte,
-            series__valid_until__gte,
-            series__valid_until__lte,
+            valid_until_date__gte,
+            valid_until_date__lte,
         )
 
         if not any(conditions):

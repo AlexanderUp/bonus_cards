@@ -6,17 +6,17 @@ from django.db import models
 from django.utils import timezone
 
 
-# class CardValidDateAnnotatedManeger(models.Manager):
-#     def get_query_set(self):
-#         return super().get_queryset().annotate(
-#             valid_until=(models.F("issue_date") + self.duration)
-#         )
+class CardValidDateAnnotatedManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().annotate(
+            valid_until_date=(models.F("issue_date") + models.F("duration"))
+        )
 
 
 class CardSeries(models.Model):
-    ONE_MONTH = 30
-    SIX_MONTH = 183
-    ONE_YEAR = 365
+    ONE_MONTH = timedelta(30)
+    SIX_MONTH = timedelta(183)
+    ONE_YEAR = timedelta(365)
 
     CARD_DURATION_TYPES = [
         (ONE_MONTH, 'One month'),
@@ -24,7 +24,7 @@ class CardSeries(models.Model):
         (ONE_YEAR, 'One year'),
     ]
 
-    duration_type = models.PositiveSmallIntegerField(
+    duration = models.DurationField(
         verbose_name="card_duration_type",
         help_text="Card duration type",
         choices=CARD_DURATION_TYPES,
@@ -40,6 +40,7 @@ class CardSeries(models.Model):
         verbose_name="description",
         help_text="Card series description",
     )
+    objects = CardValidDateAnnotatedManager()
 
     class Meta:
         verbose_name = "card_series"
@@ -58,12 +59,12 @@ class CardSeries(models.Model):
         return f"{self.series:0>5}"
 
     @property
-    def duration(self):
-        return timedelta(self.duration_type)
-
-    @property
     def valid_until(self):
         return (self.issue_date + self.duration)
+
+    @property
+    def cards_count(self):
+        return self.cards.count()
 
 
 class Card(models.Model):
@@ -134,6 +135,10 @@ class Card(models.Model):
     @property
     def valid_until(self):
         return self.series.valid_until
+
+    @property
+    def duration(self):
+        return self.series.duration
 
     @property
     def status(self):

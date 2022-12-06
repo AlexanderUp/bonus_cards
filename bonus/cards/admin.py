@@ -6,11 +6,12 @@ from .models import Card, CardSeries, Transaction
 class CardSeriesAdmin(admin.ModelAdmin):
     list_display = (
         "pk",
-        "duration_type",
+        "duration",
         "issue_date",
         "description",
         "duration",
         "valid_until",
+        "cards_count",
     )
     list_display_links = (
         "description",
@@ -31,6 +32,7 @@ class CardAdmin(admin.ModelAdmin):
         "balance",
         "is_active",
         "humanreadable_status",
+        "duration",
         "valid_until",
     )
     list_select_related = (

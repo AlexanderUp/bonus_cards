@@ -1,5 +1,4 @@
 # Веб-приложение для управления базой данных бонусных карт.
-# Web-based bonus card database management application.
 
 ### Список моделей в БД
 - Модель серии бонусных карт со следующими полями:
@@ -39,26 +38,34 @@
 
 ## Запуск приложения:
 - Клонирование репозитория:
+
 ```https://github.com/AlexanderUp/bonus_cards.git```
 
 - Переход в корневую папку проекта:
+
 ```cd bonus_cards```
 
 - Создание виртуального окружения:
+
 ```python -m venv venv```
 
 - Активация виртуального окружения (macOS):
+
 ```source venv/bin/activate```
 
 - Переход в папку 'bonus':
+
 ```cd bonus```
 
 - Создание и применение миграций:
+
 ```python manage.py makemigrations```
 ```python manage.py migrate```
 
 - Создание суперпользователя (для доступа в административную часть приложения):
+
 ```python manage.py createsuperuser```
 
 - Запуск сервера:
+
 ```python manage.py runserver```
